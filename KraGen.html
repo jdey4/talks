@@ -116,7 +116,7 @@ $$ \hat{y} = argmax~\_k ~~(g(x))$$
 $$\hat{f}\_k(x) = \frac{1}{n}\sum\_{r=1}^{p\_n}n\_{rk} (a\_r^T x + b\_r)I(x \in Q\_r)$$
 
 ### We replace the affine activations:
-$$\hat{f}\_k(x) = \frac{1}{n}\sum\_{r=1}^{\tilde{p}\_n}n\_{rk} G(x, \mu\_r, \Sigma\_r)I(r = r') + \frac{b}{n}$$
+$$\hat{f}\_k(x) = \frac{1}{n}\sum\_{r=1}^{\tilde{p}\_n}n\_{rk} G(x, \hat{\mu}\_r, \hat{\Sigma}\_r)I(r = r') + \frac{b}{n}$$
 where, $r' = argmin~\_i ~|\mu\_i - x|\_{\Sigma\_i}$
 ---
 ## Conditions for consistency
