@@ -68,7 +68,7 @@ $P(Y=y|\hat{P} = p) = p$
 </center>
 
 ## Existing methods:
--Most methods are post-hoc: $\phi: \hat{P} \to$ $P\_Y$ 
+-Most methods are post hoc: $\phi: \hat{P} \to$ $P\_Y$ 
 
 ## Our approach:
  We want to achieve consistency!
@@ -140,7 +140,7 @@ where, $r' = argmin~\_i ~|\mu\_i - x|\_{\Sigma\_i}$
 ## Estimate the mean 
 $$\mu\_r = \frac{1}{n\_r}\sum\_{i=1}^{n}x\_i I(x\_i \in Q\_r)$$
 ---
-## Detect polytope membership
+## Measure similarity between polytopes
 
 <br>
 <center>
@@ -154,8 +154,8 @@ $$l\_r = -\sum\_{i=1}^n w\_{rs} I(x\_i \in Q\_s) \log (G(x\_i, \mu, \Sigma)) + \
 $$\Sigma\_r = argmin~\_{\Sigma} ~~l\_r$$
 ---
 ## Results on MNIST
-Accuracy $~95.5\%$ (trained on $10000$ samples only) <br>
-Baseline deepnet accuracy $~99.2\%$ <br>
+Accuracy $~95.5\%$ and ECE $1e-3$ (trained on $10000$ samples only) <br>
+Baseline deepnet accuracy $~99.2\%$ and ECE $0.1$ (trained on $50000$ samples) <br>
 Parameter compression $\sim 1000$ <br>
 Average posterior for noise input $~0.1$
 <br>
