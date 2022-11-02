@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+  
+<head>
+  <title>Learning</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" href="fonts/quadon/quadon.css">
+  <link rel="stylesheet" href="fonts/gentona/gentona.css">
+  <link rel="stylesheet" href="slides_style_i.css">
+  <script type="text/javascript" src="assets/plotly/plotly-latest.min.js"></script>
+
+</head>
+
+<body>
+  <textarea id="source">
+
+<div>
+  
+
+<img src=
+  "images/jhu.png" 
+    alt="jhu logo" 
+    align="right"
+    width = "240"
+    height= "125">
+</div>
+<br>
+##Kernel Generative Networks
+
+Jayanta Dey, Will LeVine, Ashwin De Silva, Haoyin Xu <br>
+PI: Joshua T. Vogelstein, [JHU](https://www.jhu.edu/)
+
+<center>
+![:scale 35%](images/neurodata_blue.png)
+<br>
+</center>
+---
+## Robotic surgery
+
+<center>
+![:scale 80%](images/surgery.png)
+</center>
+
+.ye[Question:] Which do you prefer, left or right?
+
+---
+## Autonomous driving
+
+<br>
+<center>
+  ![:scale 80%](images/carcrash.png)
+</center>
+<br>
+<br>
+.ye[Solution:] We want calibrated learners!
+---
+## What is calibration?
+
+- Consider $n~ \mathrm{iid}$ samples $\[(x\_i, y\_i)\]\_{i=1}^n~$ distributed as $(X, Y) \sim P_{X,Y} $
+- Consider the marginals from $P\_{X,Y} $ as $X \sim P\_X$ and $Y \sim P\_Y$
+- A model predicts $P\_Y$ as $\hat{P}$ 
+
+We say a model is calibrated if 
+<br>
+<center>
+$P(Y=y|\hat{P} = p) = p$
+</center>
+
+## Existing methods:
+-Most methods are post-hoc: $\phi: \hat{P} \to$ $P\_Y$ 
+
+## Our approach:
+ We want to achieve consistency!
+---
+## How do we measure calibration?
+
+### Reliability Diagrams 
+
+<center>
+  ![:scale 40%](images/reliability_diag.png)
+</center>
+
+<br>
+<br>
+"Guo, Chuan, et al. "On calibration of modern neural networks." International conference on machine learning. PMLR, 2017."
+---
+## How do we measure calibration?
+
+### Expected Calibration Error
+
+$$ECE = \sum\_{m=1}^M \frac{|B\_m|}{n} | acc(B\_m) - conf(B\_m)|$$
+
+---
+## Our goal
+We define, $~~P\_{out} = $ { $P: \text{supp}(P) \cap \text{supp}(P\_{in}) = \emptyset$}
+
+<br>
+<br>
+$$g(x) =  P[Y=k|X=x] ~\forall k ~\text{if} ~~X \sim P\_X$$
+$$    = P[Y=k] ~\forall k ~\text{if} ~~X \sim P\_{out}$$
+
+$$P[Y=k|X=x] = \frac{P[X=x|Y=k]P[Y=k]}{\sum\_{i=1}^K P[X=x|Y=i] P[Y=i]}$$
+
+We predict the class labels as 
+$$ \hat{y} = argmax~\_k ~~(g(x))$$
+---
+## How deep-nets partition 
+<br>
+<center>
+  ![:scale 60%](images/ReLU.png)
+</center>
+---
+## Our approach
+### Traditional deep-discriminative models:
+$$\hat{f}\_k(x) = \frac{1}{n}\sum\_{r=1}^{p\_n}n\_{rk} (a\_r^T x + b\_r)I(x \in Q\_r)$$
+
+### We replace the affine activations:
+$$\hat{f}\_k(x) = \frac{1}{n}\sum\_{r=1}^{\tilde{p}\_n}n\_{rk} G(x, \mu\_r, \Sigma\_r)I(r = r')$$
+where, $r' = argmin~\_i ~|\mu\_i - x|\_{\Sigma\_i}$
+---
+## Conditions for consistency
+- The mean of the kernel can be any point $z_r$ within the polytope $Q_r$ as $n_r \to \infty$
+- The kernel bandwidth along any dimension $\sigma_{r}$ is any non-negative number always bounded by the polytope bandwidth $h_n$ as $n_r \to \infty$, i.e., $\sigma_r \leq h_n$
+
+---
+## How to learn a generative model?
+<br>
+<center>
+  ![:scale 40%](images/polytopes.png)
+</center>
+---
+## Detect polytope membership
+
+<br>
+<center>
+  ![:scale 60%](images/detect_polytope.png)
+</center>
+---
+## Estimate the mean 
+$$\mu\_r = \frac{1}{n\_r}\sum\_{i=1}^{n}x\_i I(x\_i \in Q\_r)$$
+---
+## Detect polytope membership
+
+<br>
+<center>
+  ![:scale 60%](images/weight.png)
+</center>
+---
+## Estimate covariance matrix
+
+$$l\_r = -\sum\_{i=1}^n w\_{rs} I(x\_i \in Q\_s) \log (G(x\_i, \mu, \Sigma)) + \lambda ||\Sigma^{-1}||\_F^2$$
+<br>
+$$\Sigma\_r = argmin~\_{\Sigma} ~~l\_r$$
+---
+## Results on MNIST
+Accuracy $~95.5\%$ <br>
+Baseline deepnet accuracy $~99.2\%$ <br>
+Parameter compression $\sim 1000$ <br>
+Average posterior for noise input $~0.1$
+<br>
+<center>
+  ![:scale 40%](images/mnist.png)
+</center>
+---
+## Questions? 
+---
+
+</textarea>
+  <!-- <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script> -->
+  <!-- <script src="remark-latest.min.js"></script> -->
+  <script src="remark-latest.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
+  <script type="text/javascript">
+
+    var options = {};
+    var renderMath = function () {
+      renderMathInElement(document.body);
+      // or if you want to use $...$ for math,
+      renderMathInElement(document.body, {
+        delimiters: [ // mind the order of delimiters(!?)
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false },
+        ]
+      });
+    }
+
+    remark.macros.scale = function (percentage) {
+      var url = this;
+      return '<img src="' + url + '" style="width: ' + percentage + '" />';
+    };
+
+    // var slideshow = remark.create({
+    // Set the slideshow display ratio
+    // Default: '4:3'
+    // Alternatives: '16:9', ...
+    // {
+    // ratio: '16:9',
+    // });
+    
+    var slideshow = remark.create(options, renderMath);
+
+  
+  </script>
+</body>
+
+</html>
