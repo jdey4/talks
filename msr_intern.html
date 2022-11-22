@@ -138,7 +138,7 @@ class: inverse
 ---
 class: inverse 
 
-## Last Year: A Grand Challenge
+## Recent Years: A Grand Challenge
 
 <br>
 
@@ -156,7 +156,7 @@ class: inverse
 - Industry
   - Microsoft/Amazon/Google trained a recommender system on existing products, then a new product is launched
 - Healthcare
-  - A new disease, test, treatment exists
+  - A new disease breaks out, similar test, treatment already exists
 - Augmented Reality
   - Walking around, go to a new city
 
@@ -297,7 +297,7 @@ find the $h \in \mathcal{H}$ that minimizes generalization error in that setting
 
 .center[ $h^\diamond = \arg \min\_{h \in \mathcal{H}} \mathcal{E}\_f(S\_n)$.]
 
-if there is no constraints on $\mathcal{H}$, then $h^\diamond = h^*$ (Bayes hypothesis)
+if there is no constraint on $\mathcal{H}$, then $h^\diamond = h^*$ (Bayes hypothesis)
 ---
 class: inverse
 
@@ -306,17 +306,15 @@ class: inverse
 
 Given
 - .ye[source] data $S_1$,  
-- .ye[target] data $S_0$ from possibly another distribution.
-- let $S = S_0 \cup S_1$.
+- .ye[target] data $S_2$ from possibly another distribution.
+- let $S = S_1 \cup S_2$.
 
-
-<!-- "An algorithm $f$  .ye[transfer] learns from data $\mathcal{D}_j$  with respect to transfer learning task $t$ with performance measure $\mathcal{E}^t$, if $f$'s performance at task  $t$ improves  with $\mathcal{D}_j$." -->
 
 --
 
 
 .center[$f$ .ye[transfer] learns  from $S_1$ iff 
-$\mathcal{E}_f(S) < \mathcal{E}_f(S_0).$]
+$\mathcal{E}_f(S) < \mathcal{E}_f(S_2).$]
 
 
       
@@ -352,24 +350,6 @@ class: inverse
 Sequential multi-task learning, where
 - $|\mathcal{J}|$ is (countably) infinite
 - $J_n$ is the number of tasks observed after $n$ samples
-
-
-
----
-class:inverse 
-
-
-###  Learning Scenarios
-
-<br> 
-
-|             | $J>1$ | Sequential  | 
-| :---:       | :---: | :---:       | 
-| Machine     | 0 | 0 | 
-| Sequential  | 0 | 1 |
-| Multi-task  | 1 | 0 | 
-| Lifelong    | 1 | 1 | 
-
 
 
 ---
@@ -412,6 +392,7 @@ $$  BLE\_n^t(f) :=
     \frac{\mathcal{E}\_f^t(\bigcup\_{i=1}^t S^i)}{\mathcal{E}\_f^t(\bigcup\_{i=1}^T S^i)}.
 $$
 
+--
 <br>
 LE factorizes:
 $$  LE\_n^t(f) := 
