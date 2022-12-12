@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Weekly</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="fonts/quadon/quadon.css">
+    <link rel="stylesheet" href="fonts/gentona/gentona.css">
+    <link rel="stylesheet" href="slides_style.css">
+    <script type="text/javascript" src="assets/plotly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+class:inverse 
+
+### Weekly Meeting (GTL) 
+
+[JHU](https://www.jhu.edu/): Jayanta Dey 
+12/13/2022
+
+![:scale 40%](images/neurodata_blue.png)
+
+
+
+
+---
+class:inverse
+
+## Shalev-Shwartz Framework
+
+- The learner's input: 
+    - Domain set: $\mathcal{X}$
+    - Label set: $\mathcal{Y}$
+    - Training data: $S = ((x_1,y_1), \cdots, (x_m,y_m))$
+- Algorithm : $A: S \rightarrow \mathcal{H}$
+- Learner's output: $h: \mathcal{X} \rightarrow \mathcal{Y}$
+- Data-generation model: $\mathcal{D}$ over $\mathcal{X}$ and a labeling function $f: \mathcal{X} \rightarrow \mathcal{Y}$
+- Measure of success:  $$L\_{\mathcal{D},f}(h) = \mathbb{P}\_{x \sim \mathcal{D}} [h(x) \neq f(x)]$$
+
+
+---
+class: inverse
+
+## Empirical Risk 
+
+$$L\_s(h) = \frac{|i \in [m]: h(x\_i) \neq y\_i|}{m}$$
+ - No evaluation set
+ - training set = evaluation set
+
+---
+class: inverse 
+
+## Empirical Risk Minimization 
+
+$$h\_S \in \arg \min \_{h \in \mathcal{H}} L\_S(h)$$
+
+
+
+
+---
+class:inverse 
+
+
+## Error Bound 
+Considering $h^* = 0$, for any empirical risk minimizer $h_s$:
+
+ $$\mathbb{P}(L_{(\mathcal{D},f)}(h\_S)>\epsilon) \leq |\mathcal{H}|e^{- \epsilon m}$$
+
+For $m \geq \frac{\log(|\mathcal{H}|/\delta)}{\epsilon}$, we are gauranteed to have a emiprical solution $h_s$ concentrated around $0$ or $h^*$.
+---
+class: inverse
+
+## PAC learner
+The error bound enables us to write- 
+
+With $m \geq m_{\mathcal{H}}(\epsilon, \delta)$, 
+there exists an algorithm which yield $h$ such that
+<br>
+
+$$ \mathbb{P}(L\_D(h) \leq \min \_{h' \in \mathcal{H}} L\_D(h') + \epsilon) \geq 1 - \delta$$
+
+---
+class: inverse
+
+## Example: Lifelong Lerners
+
+$$L\_s(h) = \frac{|i \in [m]: h(x\_i) \neq y\_i|}{m}$$
+
+$$h\_S \in \arg \min \_{h \in \mathcal{H}} L\_S(h)$$
+
+$\mathcal{H}$ is constrained with OOD samples $n$.
+---
+class: inverse
+
+## Weak PAC Learner
+.ye[A learning algorithm $A$] is a weak-learner for .ye[a class $\mathcal{H}$] if for every $\mathcal{H}, \mathcal{D}, f$ we have 
+that running the algorithm on .ye[$m \geq m_{\mathcal{H}}(\epsilon, \delta)$] i.i.d. samples returns a hypothesis $h$ such that:
+
+$$\mathbb{P}(L\_{(\mathcal{D},f)}(h) \leq 1/2 - \epsilon) \geq 1 - \delta$$
+
+Note that $\mathcal{H}$ is .ye[weakly learnable] and $A$ is .ye[weak-learner].
+
+.blue[Our version]:
+Given .ye[a setting $b$] and .ye[$m$ evaluation data points], a .ye[hypothesis class $\mathcal{H}'$] as yielded by a learner class $\mathcal{F}$ is weakly 
+learnable with a data sequence $s_n$ if there exists a learner $f \in \mathcal{F}$ such that for any $P \in \mathcal{P}$ and 
+$\epsilon, \delta \in (0,1)$, there exists $M(\epsilon, \delta) \in \mathbb{N}$ and for $m \geq M$, $f$ outputs a hypothesis $\hat{h}_n$ such that:
+
+$$\mathbb{P}[R(\hat{h}\_{n}) \leq 0.5 - \epsilon] \geq 1 - \delta$$
+---
+class: inverse
+
+## Strong PAC Learner
+.ye[A learning algorithm $A$] is a strong-learner for .ye[a class $\mathcal{H}$] if for every $\mathcal{H}, \mathcal{D}, f$ we have 
+that running the algorithm on .ye[$m \geq m_{\mathcal{H}}(\epsilon, \delta)$] i.i.d. samples returns a hypothesis $h$ such that:
+
+$$\mathbb{P}(L\_{(\mathcal{D},f)}(h) \leq \min \_{h' \in \mathcal{H}} L\_D(h') + \epsilon) \geq 1 - \delta$$
+
+---
+class: inverse
+
+## Theorem
+
+A hypothesis class $\mathcal{H}$ is weakly PAC-learnable iff it is strongly PAC-learnable.
+
+---
+class: inverse
+
+## Summary 
+- We have to prove the traditional theorems for all the concepts we introduce.
+
+---
+class: middle, inverse
+
+###Questions?
+
+
+
+</textarea>
+<!-- <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script> -->
+<script src="remark-latest.min.js"></script>
+<!-- <script src="remark-latest.min169.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
+<script type="text/javascript">
+
+  var options = {};
+  var renderMath = function() {
+    renderMathInElement(document.body);
+    // or if you want to use $...$ for math,
+    renderMathInElement(document.body, {delimiters: [ // mind the order of delimiters(!?)
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false},
+        {left: "\\[", right: "\\]", display: true},
+        {left: "\\(", right: "\\)", display: false},
+    ]});
+  }
+
+  var slideshow = remark.create(options, renderMath);
+
+  // var slideshow = remark.create({
+  // Set the slideshow display ratio
+  // Default: '4:3'
+  // Alternatives: '16:9', ...
+  // {
+  // ratio: '16:9',
+  // });
+
+</script>
+</body>
+</html>
