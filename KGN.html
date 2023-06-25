@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+  
+<head>
+  <title>Learning</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" href="fonts/quadon/quadon.css">
+  <link rel="stylesheet" href="fonts/gentona/gentona.css">
+  <link rel="stylesheet" href="slides_style_i.css">
+  <script type="text/javascript" src="assets/plotly/plotly-latest.min.js"></script>
+
+</head>
+
+<body>
+  <textarea id="source">
+
+<div>
+  
+
+<img src=
+  "images/jhu.png" 
+    alt="jhu logo" 
+    align="right"
+    width = "240"
+    height= "125">
+</div>
+<br>
+##Deep Discriminative to Kernel Generative Networks for Calibrated Inference
+
+Jayanta Dey, Haoyin Xu, Ashwin De Silva, Will LeVine <br>
+PI: Joshua T. Vogelstein, [JHU](https://www.jhu.edu/)
+
+<center>
+![:scale 35%](images/neurodata_blue.png)
+<br>
+</center>
+---
+## A funny experiment with ChatGPT
+
+<center>
+![:scale 50%](images/chatgpt.jpeg)
+</center>
+
+---
+## Autonomous driving
+
+<br>
+<center>
+  ![:scale 80%](images/carcrash.png)
+</center>
+
+---
+## What is calibration?
+
+We say a model is calibrated if 
+<br>
+<center>
+  $\hat{P}(y|x) = P(y|x)$
+</center>
+
+Indirect way of measuring it 
+<center>
+$P(Y=y|\hat{P} = p) = p$
+</center>
+---
+## Existing methods
+
+### .w[In-distribution Calibration]
+- Platt Scaling
+- Temperature Scaling
+- Isotonic Regression
+- Ensemble Methods
+
+### .w[OOD Calibration]
+- Discriminative 
+- Generative 
+---
+## What are we solving?
+- Address in-distribution (ID) and out-of-distribution (OOD) calibration as a continuum.
+
+- Address the confidence calibration problems for both ReLU-nets and random forests from a common ground.
+
+- Provide guarantees for asymptotic performance.
+
+- Do unsupervised OOD calibration.
+---
+## Problem Formulation
+Consider a supervised learning problem with independent and identically distributed training samples $\{ (\mathbf{x}\_i, y\_i)\}\_{i=1}^n$ such that $(X, Y) \sim P\_{X, Y}$, where $X \sim P\_X$ is a $\mathcal{X} \subseteq \mathbb{R}^d$ valued input and $Y \sim P\_Y$ is a $\mathcal{Y} = \{1, \cdots, K\}$ valued class label. We define, $\mathcal{S}$ as high density region of $P\_{X,Y}$. We want to estimate $g\_y(\mathbf{x})$ such that:
+<br>
+$$g\_y(x) =  P\_{Y|X}(y|x), ~\text{if} ~x \in \mathcal{S}$$
+$$      = P\_Y(y), ~\text{if} ~x \notin \mathcal{S}$$
+---
+## How deep-nets partition 
+<br>
+<center>
+  ![:scale 60%](images/ReLU.png)
+</center>
+---
+## Our Model
+### .w[Traditional deep-discriminative models:]
+$$\hat{f}\_y(\mathbf{x}) = \sum\_{r=1}^{p} (a\_r^T \mathbf{x} + b\_r)I(\mathbf{x} \in Q\_r)$$
+
+### .w[We replace the affine activations:]
+$$\hat{f}\_y(\mathbf{x}) = \frac{1}{n}\sum\_{r \in \mathcal{P}}n\_{ry} G(\mathbf{x}, \hat{\mu}\_r, \hat{\Sigma}\_r)I(r = r^*\_{\mathbf{x}}) + \frac{b}{n}$$
+
+$$\text{where}, r^*\_{\mathbf{x}} = argmin~\_r ~|\mu\_r - \mathbf{x}|$$
+
+#### .w[We estimate $g\_y(x)$ as:]
+$$\hat{g}\_y(\mathbf{x}) = \frac{\hat{f}\_y(\mathbf{x}) \hat{P}\_Y(y)}{\sum\_{k=1}^{K} \hat{f}\_k(\mathbf{x}) \hat{P}\_Y(k)}$$
+---
+## Our Goal
+### .w[Asymptotic Performance]
+- As $n \to \infty$:
+$$\max\_{y \in \mathcal{Y}} \sup_{\mathbf{x} \in \mathbb{R}^d} |g\_y(\mathbf{x}) - \hat{g}\_y(\mathbf{x})| \to 0$$
+
+### .w[Finite Sample Performance]
+- Used various simulation and $46$ Openml-cc18 datasets.
+---
+## Conditions for Achieving Goal \#1
+
+- The center of the kernel can be any point $z_r$ within the polytope $Q_r$ as $n \to \infty$.
+- The kernel bandwidth along any dimension $\sigma_{r}$ is any positive number always bounded by the polytope bandwidth $h_n$ as $n \to \infty$, i.e., $\sigma_r = C_r h_n$, where $0<C_r\leq 1$.
+---
+## Acheiving Goal \#2: Simulation Experiments
+<center>
+  ![:scale 50%](images/simulations.png)
+</center>
+---
+## Simulation Experiments (Continued)
+<center>
+  ![:scale 70%](images/simulation_res.png)
+</center>
+---
+## Acheiving Goal \#2: Benchmark Data Study 
+<center>
+  ![:scale 70%](images/openml_summary.png)
+</center>
+---
+## Conclusions
+- Thinking in terms of polytopes is a good way to solve calibration problem in a unified way.
+- Changing the activation function over each polytope can result in better calibration.
+- By considering geodesic distance the work can be extened for vision datasets.
+
+---
+## Questions? 
+---
+
+</textarea>
+  <!-- <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script> -->
+  <!-- <script src="remark-latest.min.js"></script> -->
+  <script src="remark-latest.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
+  <script type="text/javascript">
+
+    var options = {};
+    var renderMath = function () {
+      renderMathInElement(document.body);
+      // or if you want to use $...$ for math,
+      renderMathInElement(document.body, {
+        delimiters: [ // mind the order of delimiters(!?)
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false },
+        ]
+      });
+    }
+
+    remark.macros.scale = function (percentage) {
+      var url = this;
+      return '<img src="' + url + '" style="width: ' + percentage + '" />';
+    };
+
+    // var slideshow = remark.create({
+    // Set the slideshow display ratio
+    // Default: '4:3'
+    // Alternatives: '16:9', ...
+    // {
+    // ratio: '16:9',
+    // });
+    
+    var slideshow = remark.create(options, renderMath);
+
+  
+  </script>
+</body>
+
+</html>
