@@ -97,7 +97,11 @@ $P(Y=y|\hat{P} = p) = p$
 Hein, Matthias, Maksym Andriushchenko, and Julian Bitterwolf. "Why relu networks yield high-confidence predictions far away from the training data and how to mitigate the problem." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2019.
 ---
 ## Problem Formulation
-Consider a supervised learning problem with independent and identically distributed training samples $\{ (\mathbf{x}\_i, y\_i)\}\_{i=1}^n$ such that $(X, Y) \sim P\_{X, Y}$, where $X \sim P\_X$ is a $\mathcal{X} \subseteq \mathbb{R}^d$ valued input and $Y \sim P\_Y$ is a $\mathcal{Y} = \{1, \cdots, K\}$ valued class label. We define, $\mathcal{S}$ as high density region of $P\_{X,Y}$. We want to estimate $g\_y(\mathbf{x})$ such that:
+- Consider a supervised learning problem with $\mathrm{IID}$ training samples $\{ (\mathbf{x}\_i, y\_i)\}\_{i=1}^n$ 
+- $(X, Y) \sim P\_{X, Y}$, where $X \sim P\_X$ is a $\mathcal{X} \subseteq \mathbb{R}^d$ valued input and $Y \sim P\_Y$ is a $\mathcal{Y} = \{1, \cdots, K\}$ valued class label. 
+- We define, $\mathcal{S}$ as high density region of $P\_{X,Y}$. 
+
+We want to estimate $g\_y(\mathbf{x})$ such that:
 <br>
 $$g\_y(x) =  P\_{Y|X}(y|x), ~\text{if} ~x \in \mathcal{S}$$
 $$      = P\_Y(y), ~\text{if} ~x \notin \mathcal{S}$$
