@@ -26,13 +26,15 @@
     height= "125">
 </div>
 <br>
+<br>
+<br>
 ##Deep Discriminative to Kernel Density Networks for In- and Out-of_distribution Calibrated Inference
 
 Jayanta Dey, Will LeVine, Haoyin Xu, Ashwin De Silva <br>
 PI: Joshua T. Vogelstein, [JHU](https://www.jhu.edu/)
 
 <center>
-![:scale 35%](images/neurodata_blue.png)
+![:scale 30%](images/neurodata_blue.png)
 <br>
 </center>
 ---
@@ -101,12 +103,12 @@ $$      = P\_Y(y), ~\text{if} ~\mathbf{x} \notin \mathcal{S}$$
   ![:scale 100%](images/polytopes.png)
 </center>
 ---
-## Traditional Model
+## Traditional Approach
  Learned polytopes $\mathcal{P} = (1,2, \cdots, p)$
 $$\hat{f}\_y(\mathbf{x}) = \sum\_{r=1}^{p} (a\_r^T \mathbf{x} + b\_r)I(\mathbf{x} \in Q\_r)$$
 
 ---
-## Our Model
+## Our Approach
 ### .w[We replace the affine activations:]
 $$\hat{f}\_y(\mathbf{x}) = \frac{1}{n\_y}\sum\_{r \in \mathcal{P}}n\_{ry} G(\mathbf{x}, \hat{\mu}\_r, \hat{\Sigma}\_r)I(r = r^*\_{\mathbf{x}}) + \frac{b}{n}$$
 
