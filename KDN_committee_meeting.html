@@ -104,7 +104,7 @@ $$      = P\_Y(y), ~\text{if} ~\mathbf{x} \notin \mathcal{S}$$
 </center>
 ---
 ## Traditional Approach
- Learned polytopes $\mathcal{P} = (1,2, \cdots, p)$
+ The set of learned polytopes $(1,2, \cdots, p)$
 $$\hat{f}\_y(\mathbf{x}) = \sum\_{r=1}^{p} (a\_r^T \mathbf{x} + b\_r)I(\mathbf{x} \in Q\_r)$$
 
 ---
@@ -195,7 +195,7 @@ $$d(r,s) = -\mathcal{K}(r,s) + \frac{1}{2} (\mathcal{K}(r,r) + \mathcal{K}(s,s))
 ---
 ## Conclusions
 - Thinking in terms of polytopes is a good way to solve calibration problem in a unified way.
-- Changing the activation function over each polytope can result in better in- and out-of-distribution calibration.
+- We measure similarity between polytopes using forest or neural kernel and then measure local similarity using a Gaussian kernel.
 ---
 ### Acknowledgements
 
