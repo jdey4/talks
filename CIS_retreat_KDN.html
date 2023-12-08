@@ -78,7 +78,6 @@ We say a model is calibrated if
 
 - Address the confidence calibration problems for both ReLU-nets and random forests from a common ground.
 
-- Provide guarantees for asymptotic performance.
 
 - Do unsupervised OOD calibration.
 
@@ -120,7 +119,6 @@ $$\hat{\mu}\_r = \frac{1}{n\_r} \sum\_{i=1}^{n} \mathbf{x}\_i I(\mathbf{x}\_i \i
 $$\hat{\Sigma}\_r = \frac{ \sum\_{i=1}^n I(\mathbf{x}\_i \in Q\_r) (\mathbf{x}\_i - \hat{\mu}\_r)  (\mathbf{x}\_i - \hat{\mu}\_r)^\top +\lambda I\_d}{ \sum\_{i=1}^n I(\mathbf{x}\_i \in Q\_r)}$$
 ---
 ## Forest and Neural Kernel
-<br>
 <center>
   ![:scale 80%](images/kernel_flow_diag.png)
 </center>
@@ -131,20 +129,23 @@ $$\hat{\Sigma}\_r = \frac{ \sum\_{i=1}^n I(\mathbf{x}\_i \in Q\_r) (\mathbf{x}\_
 $$d(r,s) = -\mathcal{K}(r,s) + \frac{1}{2} (\mathcal{K}(r,r) + \mathcal{K}(s,s)) = 1 - \mathcal{K}(r,s)$$
 ---
 ## Simulation Experiments
-<br>
 <center>
-  ![:scale 80%](images/simulations_reduced.png)
+  ![:scale 65%](images/simulations_slides.png)
+</center>
+---
+## Simulation Experiments (Continued)
+<center>
+  ![:scale 55%](images/simulation_res_slides.png)
 </center>
 ---
 ## Benchmark Data Study
-<br> 
 <center>
   ![:scale 70%](images/openml_summary.png)
 </center>
 ---
 ## Conclusions
-- Thinking in terms of polytopes is a good way to solve calibration problem in a unified way.
 - We measure similarity between polytopes using forest or neural kernel and then measure local similarity using a Gaussian kernel.
+- Thinking in terms of polytopes is a good way to solve calibration problem in a unified way for both RF and ReLU-nets in both ID and OOD regions.
 ---
 ### Acknowledgements
 
