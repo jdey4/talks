@@ -16,9 +16,8 @@
   <textarea id="source">
 
 <div>
-  
 
-<img src=
+  <img src=
   "images/jhu.png" 
     alt="jhu logo" 
     align="right"
@@ -28,15 +27,120 @@
 <br>
 <br>
 <br>
-##Deep Discriminative to Kernel Density Networks for In- and Out-of-distribution Calibrated Inference
+##Towards a theory of out-of-distribution learning
 
-Jayanta Dey, Will LeVine, Haoyin Xu, Ashwin De Silva <br>
+Jayanta Dey, Ali Geisa, Ronak Mehta, Tyler M. Tomita <br>
 PI: Joshua T. Vogelstein, [JHU](https://www.jhu.edu/)
 
 <center>
 ![:scale 30%](images/neurodata_blue.png)
 <br>
 </center>
+
+---
+## Questions to Answer
+- What is a learning task?
+- How can we generalize the idea of in-distribution learning to other out-of-distribution scenarios?
+- Is it enough to learn weakly?
+---
+## Decision Task
+
+- Data Space: $\mathcal{S} = \mathcal{X} \times \mathcal{Y}$
+- Hypothesis: $\mathcal{H} \subseteq$ { $h \mid h: \mathcal{X} \to \mathcal{Y}$}
+- Distributions: $ (X,Y) \sim \mathcal{D}$
+- Risk: 
+  - $R : \mathcal{H} \times \mathcal{D} \mapsto \mathbb{R}\_{\geq 0}$;   
+  - $\ell: \mathcal{Y} \times \mathcal{Y} \mapsto \mathbb{R}\_{\geq 0}$; 
+  - $R(h) = \mathbb{E}\_{(X, Y) \sim D}[\ell(h(X), Y)]$
+
+### .w[Definition:]
+$$\min\_{h \in \mathcal{H}} R(h)$$
+---
+## PAC In-Distribution Learning
+
+- Data Space: $s\_n \in \mathcal{S}$ where $\mathcal{S} = $ {$s\_n \mid  n \in \mathbb{Z}_{\geq 0}$ }
+- Hypothesis: same 
+- Distributions: $\mathcal{D}= $ {$\mathcal{D}\_n | n \in \mathbb{Z}\_{\geq 0}$}
+- Risk: same
+- Learners: $\mathcal{F} \subseteq$ { $f: \mathcal{S} \times \Lambda \mapsto \mathcal{H}$ }
+
+### .w[Definition:]
+$$\mathbb{P}[R(h\_0) - R(\hat{h}\_n) \geq \epsilon] \geq 1 - \delta.$$
+---
+## PAC Transfer Learning
+
+- Data Space: $s\_n = ( (x\_1,y\_1, z\_1), \cdots, (x\_n,y\_n,z\_n))$; $\mathcal{X} = \mathcal{X}^0 \cup \mathcal{X}^1$, $\mathcal{Y} = \mathcal{Y}^0 \cup \mathcal{Y}^1$ and $\mathbf{n}=[n\_0,n\_1]$
+- Hypothesis: $\mathcal{H} =$ { $h \mid h : \mathcal{X}^1 \mapsto \mathcal{Y}^1$}
+- Distributions: same as above, except that each $D\_n$ must be the joint distribution of $n$ samples including  the random variable $Z$
+- Risk: same
+- Learners: It can utilize source data
+
+### .w[Definition:]
+$$\mathbb{P}[R(\hat{h}\_{n\_1}) - R(\hat{h}\_n) \geq \epsilon] \geq 1 - \delta.$$
+
+---
+## PAC Multitask Learning
+
+- Data Space: $z\_i$ is a categorical indicator that the data point is an element of one of $T$ data sets
+- Hypothesis: $\mathcal{H} \subseteq$  { $h = \bigcup\_{t \in \mathcal{T}}  h^t \mid h^t : \mathcal{X}^t \mapsto \mathcal{Y}^t  \forall t \in \mathcal{T} $}
+- Distributions: same
+- Risk: $\mathcal{R} = ${$R\_1, \ldots, R\_T$}
+- Learners: data and hypothesis space more complex
+
+### .w[Definition:]
+$$\mathbb{P}[R\_t(\hat{h}\_{n\_t}) - R\_t(\hat{h}\_n) \geq \epsilon\_t] \geq 1 - \delta\_t.$$
+
+---
+## PAC Meta Learning
+
+### .w[Zero-Shot-Learnability]
+ $$\mathbb{P}[R\_{t}(h\_0) - R\_{t}(\hat{h}\_n) \geq \epsilon] \geq 1 - \delta$$
+
+ ### .w[Few-Shot-Learnability]
+ $$\mathbb{P}[R\_{t}(\hat{h}\_{n\_t}) - R\_{t}(\hat{h}\_n) \geq \epsilon] \geq 1 - \delta$$
+---
+## PAC Streaming Learning
+
+- Data Space: $s\_n$ is now a sequence
+- Hypothesis: Same as in-distribution learning
+- Distributions: $D\_n$ is a distribution of sequences
+- Risk: Same as in-distribution learning
+- Learners: $\mathcal{F} \subseteq$ {$f: \mathcal{S} \times \mathcal{H} \times \Lambda \mapsto \mathcal{H} \mid f\_n \in o(n^2)$}
+
+### .w[Definition:]
+$$\mathbb{P}[R(h\_0) - R(\hat{h}\_n) \geq \epsilon] \geq 1 - \delta$$
+
+---
+## PAC Continual/Lifelong Learning
+
+- Data Space: same as streaming learning
+- Hypothesis: $\mathcal{H} \subseteq$  { $h = \bigcup\_{t \in \mathcal{T}}  h^t \mid h^t : \mathcal{X}^t \mapsto \mathcal{Y}^t  \forall t \in \mathcal{T} $ and $\mathcal{H}\_{n-1} \subseteq \mathcal{H}\_n$}
+- Distributions: same as multitask learning
+- Risk: same as multitask learning
+- Learners: $\mathcal{F}\_n \subseteq $ { $f\_n: \mathcal{S} \times \mathcal{H}\_{n-1} \times \Lambda \mapsto \mathcal{H}\_n \mid f\_n \in o(n^2)$}
+
+### .w[Forward Learnability:]
+At $t$-th task,
+$$\mathbb{P}[R\_t(\hat{h}\_{n\_t}) - R\_t(\hat{h}\_n) \geq \epsilon\_t] \geq 1 - \delta\_t$$
+
+### .w[Backward Learnability:]
+For any task $t' \leq t$,
+$$\mathbb{P}[R\_{t'}(\hat{h}\_{n\_{t'}}) - R\_{t'}(\hat{h}\_n) \geq \epsilon\_{t'}] \geq 1 - \delta\_{t'}$$
+
+---
+## Weak Learner Theorem
+
+Conjecture: It does not apply for OOD learning.
+---
+</div>
+<br>
+<br>
+<br>
+##Deep Discriminative to Kernel Density Networks for In- and Out-of-distribution Calibrated Inference
+
+Jayanta Dey, Will LeVine, Haoyin Xu, Ashwin De Silva <br>
+PI: Joshua T. Vogelstein, [JHU](https://www.jhu.edu/)
+
 ---
 ## Robotic surgery
 
@@ -47,7 +151,7 @@ PI: Joshua T. Vogelstein, [JHU](https://www.jhu.edu/)
 .ye[Question:] Which do you prefer, left or right?
 
 ---
-## Overcondience in ID and OOD Regions
+## Overcondient on Wrongly Classified Labels
 
 <center>
   ![:scale 80%](images/overconfident.png)
@@ -62,6 +166,10 @@ We say a model is calibrated if
   $\hat{P}(y|x) = P(y|x)$
 </center>
 
+Indirect way of measuring it 
+<center>
+$P(Y=y|\hat{P} = p) = p$
+</center>
 ---
 ## Existing methods
 
@@ -80,10 +188,10 @@ We say a model is calibrated if
 
 - Address the confidence calibration problems for both ReLU-nets and random forests from a common ground.
 
+- Provide guarantees for asymptotic performance.
 
 - Do unsupervised OOD calibration.
 
-- Provide guarantees for asymptotic performance.
 ---
 ## Problem Formulation
 - Consider a supervised learning problem with $\mathrm{IID}$ training samples $\{ (\mathbf{x}\_i, y\_i)\}\_{i=1}^n$ 
@@ -98,9 +206,11 @@ $$      = P\_Y(y), ~\text{if} ~\mathbf{x} \notin \mathcal{S}$$
 ## How Deep Discriminative Networks Partition 
 <br>
 <center>
-  ![:scale 70%](images/polytopes.png)
+  ![:scale 100%](images/polytopes.png)
 </center>
-
+---
+## Traditional Approach
+ The set of learned polytopes $(1,2, \cdots, p)$
 $$\hat{f}\_y(\mathbf{x}) = \sum\_{r=1}^{p} (a\_r^T \mathbf{x} + b\_r)I(\mathbf{x} \in Q\_r)$$
 
 ---
@@ -113,6 +223,24 @@ $$\text{where}, r^*\_{\mathbf{x}} = argmin~\_r ~|\mu\_r - \mathbf{x}|$$
 #### .w[We estimate $g\_y(x)$ as:]
 $$\hat{g}\_y(\mathbf{x}) = \frac{\hat{f}\_y(\mathbf{x}) \hat{P}\_Y(y)}{\sum\_{k=1}^{K} \hat{f}\_k(\mathbf{x}) \hat{P}\_Y(k)}$$
 ---
+## Desiderata
+1. Theoretical Universal Consistency for ID:
+$$\lim\_{n \to \infty} \max\_{y \in \mathcal{Y}} \sup\_{\mathbf{x} \in \mathcal{S}} |\hat{g}\_y(\mathbf{x}) - P\_{Y|X}(y|\mathbf{x})| = 0$$
+2. Theoretical Universal Consistency for OOD:
+$$\lim\_{n \to \infty} \max\_{y \in \mathcal{Y}} \sup\_{\mathbf{x} \notin \mathcal{S}} |\hat{g}\_y(\mathbf{x}) - P\_Y(y)| = 0$$
+3. For finite sample cases, our goal is to maintain or even enhance the parent approach's ID accuracy on standard benchmark datasets.
+4. On standard benchmark datasets, we aim to enhance the ID calibration of the parent approach.
+5. We aim to enhance the OOD calibration of the parent appraoch against any OOD datasets.
+---
+## Conditions for Achieving Goal \#1 & \#2
+
+- The center of the kernel can be any point $z_r$ within the polytope $Q_r$ as $n \to \infty$.
+- The kernel bandwidth along any dimension d, $\sigma^d_{r}$ is any positive number always bounded by the polytope bandwidth $h^d_n$ as $n \to \infty$, i.e., $\sigma^d_r = C_r h^d_n$, where $0<C_r\leq 1$.
+
+Conditions on polytopes:
+- The maximum of the polytope bandwidths, $h_n \to 0$ as $n \to \infty$
+- $n$ grows faster than the shrinkage of $h_n$, i.e., $n\cdot h_n \to \infty$ as $h_n \to 0$ in probability
+---
 ## Gaussian Parameters Estimation
 
 $$\hat{\mu}\_r = \frac{1}{n\_r} \sum\_{i=1}^{n} \mathbf{x}\_i I(\mathbf{x}\_i \in Q\_r)$$
@@ -120,35 +248,54 @@ $$\hat{\mu}\_r = \frac{1}{n\_r} \sum\_{i=1}^{n} \mathbf{x}\_i I(\mathbf{x}\_i \i
 <br>
 <br>
 $$\hat{\Sigma}\_r = \frac{ \sum\_{i=1}^n I(\mathbf{x}\_i \in Q\_r) (\mathbf{x}\_i - \hat{\mu}\_r)  (\mathbf{x}\_i - \hat{\mu}\_r)^\top +\lambda I\_d}{ \sum\_{i=1}^n I(\mathbf{x}\_i \in Q\_r)}$$
+
 ---
-## Forest and Neural Kernel
+## Sample Size Ratio Estimation
+
+### .w[Randm Forest and ReLU-net Kernel:]
+
 <center>
   ![:scale 80%](images/kernel_flow_diag.png)
 </center>
+
+$$\mathcal{K}(r,s) = \frac{\sum\_{z=1}^N I(a\_z^r = a\_z^s)}{N}$$
+
+---
+## Sample Size Ratio Estimation (Continued)
+
+$$\hat{\left(\frac{n\_{ry}}{n\_y}\right)} = \frac{\tilde{w}\_{ry}}{\tilde{w}\_y} = \frac{\tilde{w}\_{ry}}{\sum\_{r\in \mathcal{P}} \tilde{w}\_{ry}} = \frac{\sum\_{s \in \mathcal{P}} \sum\_{i=1}^n w\_{rs} I(\mathbf{x}\_i \in Q\_s) I(y\_i = y) }{
+  \sum\_{r\in \mathcal{P}} \sum\_{s\in \mathcal{P}} \sum\_{i=1}^n w\_{rs} I(\mathbf{x}\_i \in Q\_s) I(y\_i = y)}$$
+
+
+  <br>
+  <br>
+  <br>
+
+$$w\_{rs} = \mathcal{K}(r,s)^{k \log n}$$
 ---
 ## Nearest Polytope Estimation
 
 ### .w[Geodesic Distance:]
 $$d(r,s) = -\mathcal{K}(r,s) + \frac{1}{2} (\mathcal{K}(r,r) + \mathcal{K}(s,s)) = 1 - \mathcal{K}(r,s)$$
 ---
-## Simulation Experiments
+## Acheiving Goal \#3, \#4 & \#5: Simulation Experiments
 <center>
-  ![:scale 65%](images/simulations_slides.png)
+  ![:scale 80%](images/simulations.png)
 </center>
 ---
 ## Simulation Experiments (Continued)
 <center>
-  ![:scale 65%](images/simulation_res_slides.png)
+  ![:scale 60%](images/simulation_res.png)
 </center>
 ---
-## Benchmark Data Study
+## Acheiving Goal \#3, \#4 & \#5: Benchmark Data Study 
 <center>
   ![:scale 70%](images/openml_summary.png)
 </center>
 ---
 ## Conclusions
+- Thinking in terms of polytopes is a good way to solve calibration problem in a unified way.
 - We measure similarity between polytopes using forest or neural kernel and then measure local similarity using a Gaussian kernel.
-- Thinking in terms of polytopes is a good way to solve calibration problem in a unified way for both RF and ReLU-nets in both ID and OOD regions.
 ---
 ### Acknowledgements
 
