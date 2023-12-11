@@ -41,7 +41,7 @@ Dey, Jayanta, et al. "Towards a theory of out-of-distribution learning." arXiv p
 ---
 ## Questions to Answer
 - What is a learning task?
-- How can we generalize the idea of in-distribution learning to other out-of-distribution scenarios?
+- How can we generalize the ideas of in-distribution learning to other out-of-distribution scenarios?
 - Is it enough to learn weakly?
 ---
 ## Decision Task
@@ -125,8 +125,8 @@ At $t$-th task,
 $$\mathbb{P}[R\_t(\hat{h}\_{n\_t}) - R\_t(\hat{h}\_n) \geq \epsilon\_t] \geq 1 - \delta\_t$$
 
 ### .w[Backward Learnability:]
-For any task $t' \leq t$,
-$$\mathbb{P}[R\_{t'}(\hat{h}\_{n\_{t'}}) - R\_{t'}(\hat{h}\_n) \geq \epsilon\_{t'}] \geq 1 - \delta\_{t'}$$
+For any task $t' \leq t$, $n' = n\_1 + n\_2 + \cdots + n\_{t'}$:
+$$\mathbb{P}[R\_{t'}(\hat{h}\_{n'}) - R\_{t'}(\hat{h}\_n) \geq \epsilon\_{t'}] \geq 1 - \delta\_{t'}$$
 
 ---
 ## Weak Learner Theorem
@@ -154,7 +154,10 @@ Carey E. Priebe | Joshua T. Vogelstein <br>
 <br>
 <br>
 <br>
-Dey, Jayanta, et al. "Representation ensembling for synergistic lifelong learning with quasilinear complexity." arXiv preprint arXiv:2004.12908 (2020).
+<br>
+<br>
+<br>
+Vogelstein, J.; Dey, J., et al. "Representation ensembling for synergistic lifelong learning with quasilinear complexity." arXiv preprint arXiv:2004.12908 (2020).
 
 
 ---
@@ -193,7 +196,6 @@ PI: Joshua T. Vogelstein, [JHU](https://www.jhu.edu/)
 <br>
 <br>
 <br>
-<br>
 Dey, Jayanta, et al. "Deep Discriminative to Kernel Generative Networks for Calibrated Inference." arXiv preprint arXiv:2201.13001 (2022).
 ---
 ## Robotic surgery
@@ -208,7 +210,7 @@ Dey, Jayanta, et al. "Deep Discriminative to Kernel Generative Networks for Cali
 ## Overcondient on Wrongly Classified Labels
 
 <center>
-  ![:scale 80%](images/overconfident.png)
+  ![:scale 60%](images/overconfident.png)
   </center>
 
 ---
@@ -260,7 +262,7 @@ $$      = P\_Y(y), ~\text{if} ~\mathbf{x} \notin \mathcal{S}$$
 ## How Deep Discriminative Networks Partition 
 <br>
 <center>
-  ![:scale 100%](images/polytopes.png)
+  ![:scale 80%](images/polytopes.png)
 </center>
 ---
 ## Traditional Approach
@@ -287,6 +289,7 @@ $$\lim\_{n \to \infty} \max\_{y \in \mathcal{Y}} \sup\_{\mathbf{x} \notin \mathc
 5. We aim to enhance the OOD calibration of the parent appraoch against any OOD datasets.
 ---
 ## Conditions for Achieving Goal \#1 & \#2
+Consider a partition rule that partitions $\mathbb{R}^d$ into an infinite number of hyperrectangle. Formally, let $\mathcal{P}\_n = ${$Q\_{1}, Q\_{2}, \cdots$} be a partition of $\mathbb{R}^d$, that is, it partitions $\mathbb{R}^d$ into sets of the type $\Pi\_{i=1}^d [\psi\_i h^i\_n, (\psi\_i+1)h^i\_n)$, where $\psi\_i$'s are integers. Let $n$ be the total number of samples and $n\_{r}$ be the number of data points within the polytope $Q\_r$.
 
 - The center of the kernel can be any point $z_r$ within the polytope $Q_r$ as $n \to \infty$.
 - The kernel bandwidth along any dimension d, $\sigma^d_{r}$ is any positive number always bounded by the polytope bandwidth $h^d_n$ as $n \to \infty$, i.e., $\sigma^d_r = C_r h^d_n$, where $0<C_r\leq 1$.
@@ -309,7 +312,7 @@ $$\hat{\Sigma}\_r = \frac{ \sum\_{i=1}^n I(\mathbf{x}\_i \in Q\_r) (\mathbf{x}\_
 ### .w[Randm Forest and ReLU-net Kernel:]
 
 <center>
-  ![:scale 80%](images/kernel_flow_diag.png)
+  ![:scale 60%](images/kernel_flow_diag.png)
 </center>
 
 $$\mathcal{K}(r,s) = \frac{\sum\_{z=1}^N I(a\_z^r = a\_z^s)}{N}$$
@@ -334,12 +337,12 @@ $$d(r,s) = -\mathcal{K}(r,s) + \frac{1}{2} (\mathcal{K}(r,r) + \mathcal{K}(s,s))
 ---
 ## Acheiving Goal \#3, \#4 & \#5: Simulation Experiments
 <center>
-  ![:scale 80%](images/simulations.png)
+  ![:scale 70%](images/simulations.png)
 </center>
 ---
 ## Simulation Experiments (Continued)
 <center>
-  ![:scale 60%](images/simulation_res.png)
+  ![:scale 55%](images/simulation_res.png)
 </center>
 ---
 ## Acheiving Goal \#3, \#4 & \#5: Benchmark Data Study 
