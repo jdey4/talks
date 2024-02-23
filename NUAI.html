@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NUAI</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="fonts/quadon/quadon.css">
+    <link rel="stylesheet" href="fonts/gentona/gentona.css">
+    <link rel="stylesheet" href="slides_style.css">
+    <script type="text/javascript" src="assets/plotly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+class:inverse 
+
+### Lifelong Learning: Theory and Practice
+
+[JHU](https://www.jhu.edu/): Jayanta Dey | Hayden Helm | Ronak Mehta | Will LeVine |
+Carey E. Priebe | Joshua T. Vogelstein <br>
+[Microsoft Research](https://www.microsoft.com/en-us/research/): Weiwei Yang | Jonathan Larson | Bryan Tower | Chris White
+
+
+
+![:scale 40%](images/neurodata_blue.png)
+
+
+
+
+---
+class:inverse
+
+## Lifelong Learning in AI
+
+- Given a .ye[sequence] of data associated with different tasks
+- .ye[Forward transfer]: transfer from past tasks to future tasks
+- .ye[Backward transfer]: transfer from future tasks to past tasks
+- .ye[Catastrophic forgetting]:  learning new tasks causes performance .ye[degradation] on previous tasks
+
+
+--
+
+## Natural Intelligence
+
+- Biological/natural intelligence (BI) is .ye[Lifelong]:  
+      - learning a 2nd language improves 1st language 
+      - learning to run improves walking
+
+
+---
+class: inverse 
+
+## Goals of this work 
+
+- Formalize the above AI claims 
+- Develop algorithms that move beyond catastrophic forgetting
+
+
+
+
+
+---
+class:inverse 
+
+
+## Outline 
+
+- Background 
+- Lifelong learning 
+- Evaluation criteria
+- Algorithm 
+- Simulations 
+- Benchmark data
+- Discussion
+
+
+---
+class:inverse, middle
+
+### Background
+
+
+---
+class: inverse
+
+## A simple learning example
+
+- $s =(x_i,y_i)$, $i \in \lbrace 1, 2, \ldots, 200 \rbrace$
+  - $x \in \mathbb{R}^2$
+  - $y \in \lbrace 0,1 \rbrace$
+- we desire to learn a classifier that minimizes expected misclassification rate
+
+
+---
+class: inverse
+
+<img src="images/rock20/s2.png" style="position:absolute; top:0px; left:100px; height:100%;"/>
+
+
+
+
+---
+class: inverse
+
+<img src="images/rock20/s3.png" style="position:absolute; top:0px; left:100px; height:100%;"/>
+
+
+
+---
+class: inverse
+
+<img src="images/rock20/s3a.png" style="position:absolute; top:0px; left:100px; height:100%;"/>
+
+
+
+---
+class: inverse 
+
+## But there is a problem...
+
+
+"Training on a new set of items may drastically disrupt performance on previously learned items."
+
+-- McCloskey & Cohen, 1989
+
+---
+class: inverse 
+
+## 30 years later... 
+
+
+<img src="images/rock20/masse1.png" style="width:600px;"/>
+<img src="images/rock20/flesch1.png" style="width:600px;"/>
+<img src="images/rock20/kirkpatrick1.png" style="width:600px;"/>
+
+
+---
+class: inverse 
+
+## Recent Years: A Grand Challenge
+
+<br>
+
+"We need to invent a new kind of learning that .ye[leverages existing knowledge], rather than one that obstinately starts over from square one.”— Rebooting AI, Gary Marcus, Ernest Davis, 2019
+
+<br>
+
+"One such obstacle is adaptability or robustness...  efforts toward “transfer learning,” “domain adaptation,” and “.ye[lifelong learning]”  are reflective of this obstacle." -- Judea Pearl, 2019
+
+---
+class: inverse 
+
+## This Year: A Real Challenge 
+
+- Industry
+  - Microsoft/Amazon/Google trained a recommender system on existing products, then a new product is launched
+- Healthcare
+  - A new disease breaks out, similar test, treatment already exists
+- Augmented Reality
+  - Walking around, go to a new city
+
+In all cases, re-training from scratch is just too expensive, we desire to dynamically update  with new data
+
+
+
+
+---
+class:inverse, middle 
+
+### A  Theory of the Lifelong Learnable
+
+
+
+
+---
+class: inverse
+
+## What is Learning?
+
+<img src="images/glivenko-cantelli.png" style="width:350px;"/>
+<img src="images/Vapnik71b.png" style="width:350px;"/>
+<img src="images/Valiant84.png" style="width:350px;"/>
+<img src="images/Mitchell97a.png" style="width:350px;"/>
+
+---
+class: inverse
+
+## Decision Task
+
+- Data Space: $\mathcal{S} = \mathcal{X} \times \mathcal{Y}$
+- Hypothesis: $\mathcal{H} \subseteq$ { $h \mid h: \mathcal{X} \to \mathcal{Y}$}
+- Distributions: $ (X,Y) \sim \mathcal{D}$
+- Risk: 
+  - $R : \mathcal{H} \times \mathcal{D} \mapsto \mathbb{R}\_{\geq 0}$;   
+  - $\ell: \mathcal{Y} \times \mathcal{Y} \mapsto \mathbb{R}\_{\geq 0}$; 
+  - $R(h) = \mathbb{E}\_{(X, Y) \sim D}[\ell(h(X), Y)]$
+
+### .w[Definition:]
+$$\min\_{h \in \mathcal{H}} R(h)$$
+---
+class: inverse
+
+## PAC In-Distribution Learning
+
+- Data Space: $s\_n \in \mathcal{S}$ where $\mathcal{S} = $ {$s\_n \mid  n \in \mathbb{Z}_{\geq 0}$ }
+- Hypothesis: same 
+- Distributions: $\mathcal{D}= $ {$\mathcal{D}\_n | n \in \mathbb{Z}\_{\geq 0}$}
+- Risk: same
+- Learners: $\mathcal{F} \subseteq$ { $f: \mathcal{S} \times \Lambda \mapsto \mathcal{H}$ }
+
+### .w[Definition:]
+$$\mathbb{P}[0.5 - R(\hat{h}\_n) \geq \epsilon] \geq 1 - \delta.$$
+---
+class: inverse
+
+## PAC Transfer Learning
+
+- Data Space: $s\_n = ( (x\_1,y\_1, z\_1), \cdots, (x\_n,y\_n,z\_n))$; $\mathcal{X} = \mathcal{X}^0 \cup \mathcal{X}^1$, $\mathcal{Y} = \mathcal{Y}^0 \cup \mathcal{Y}^1$ and $\mathbf{n}=[n\_0,n\_1]$
+- Hypothesis: $\mathcal{H} =$ { $h \mid h : \mathcal{X}^1 \mapsto \mathcal{Y}^1$}
+- Distributions: same as above, except that each $D\_n$ must be the joint distribution of $n$ samples including  the random variable $Z$
+- Risk: same
+- Learners: It can utilize source data
+
+### .w[Definition:]
+$$\mathbb{P}[R(\hat{h}\_{n\_1}) - R(\hat{h}\_n) \geq \epsilon] \geq 1 - \delta.$$
+
+---
+class: inverse
+
+## PAC Multitask Learning
+
+- Data Space: $z\_i$ is a categorical indicator that the data point is an element of one of $T$ data sets
+- Hypothesis: $\mathcal{H} \subseteq$  { $h = \bigcup\_{t \in \mathcal{T}}  h^t \mid h^t : \mathcal{X}^t \mapsto \mathcal{Y}^t  \forall t \in \mathcal{T} $}
+- Distributions: same
+- Risk: $\mathcal{R} = ${$R\_1, \ldots, R\_T$}
+- Learners: data and hypothesis space more complex
+
+### .w[Definition:]
+$$\mathbb{P}[R\_t(\hat{h}\_{n\_t}) - R\_t(\hat{h}\_n) \geq \epsilon\_t] \geq 1 - \delta\_t.$$
+
+---
+class: inverse
+
+## PAC Streaming Learning
+
+- Data Space: $s\_n$ is now a sequence
+- Hypothesis: Same as in-distribution learning
+- Distributions: $D\_n$ is a distribution of sequences
+- Risk: Same as in-distribution learning
+- Learners: $\mathcal{F} \subseteq$ {$f: \mathcal{S} \times \mathcal{H} \times \Lambda \mapsto \mathcal{H} \mid f\_n \in o(n^2)$}
+
+### .w[Definition:]
+$$\mathbb{P}[R(h\_0) - R(\hat{h}\_n) \geq \epsilon] \geq 1 - \delta$$
+
+---
+class: inverse
+
+## PAC Continual/Lifelong Learning
+
+- Data Space: same as streaming learning
+- Hypothesis: $\mathcal{H} \subseteq$  { $h = \bigcup\_{t \in \mathcal{T}}  h^t \mid h^t : \mathcal{X}^t \mapsto \mathcal{Y}^t  \forall t \in \mathcal{T} $ and $\mathcal{H}\_{n-1} \subseteq \mathcal{H}\_n$}
+- Distributions: same as multitask learning
+- Risk: same as multitask learning
+- Learners: $\mathcal{F}\_n \subseteq $ { $f\_n: \mathcal{S} \times \mathcal{H}\_{n-1} \times \Lambda \mapsto \mathcal{H}\_n \mid f\_n \in o(n^2)$}
+
+---
+class:inverse, middle 
+
+### Evaluation Criteria
+
+
+---
+class:inverse
+
+## Transfer
+
+
+The Transfer of learning algorithm $f$ for task $t$ is
+$$  Transfer\_n^t(f) := 
+    \log \frac{\mathcal{E}\_f^t(S^t)}{\mathcal{E}\_f^t(\bigcup\_{i=1}^T S^i)}.
+$$
+
+<br>
+
+Algorithm $ f $ transfer learns if $ ~Transfer\_n^t(f) > 0 $. 
+
+
+---
+class:inverse 
+
+## Forward & Backward Transfer 
+
+
+$$  Forward~Transfer\_n^t(f) := 
+    \log \frac{\mathcal{E}\_f^t(S^t)}{\mathcal{E}\_f^t(\bigcup\_{i=1}^t S^i)}.
+$$
+
+--
+
+<br>
+
+$$  Backward~Transfer\_n^t(f) := 
+    \log \frac{\mathcal{E}\_f^t(\bigcup\_{i=1}^t S^i)}{\mathcal{E}\_f^t(\bigcup\_{i=1}^T S^i)}.
+$$
+
+--
+<br>
+Transfer decomposes:
+$$  Transfer\_n^t(f) := 
+FT\_n^t(f) + BT\_n^t(f).
+$$
+---
+class: inverse, middle 
+
+### Algorithm
+
+---
+class: inverse 
+
+## Lifelong Learning Schema
+
+
+<img src="images/learning-schemas.png" style="width:700px;"/>
+
+---
+class: inverse, middle 
+
+### Simulations
+
+
+
+---
+class: inverse
+
+## Simulation data generation
+
+- .lb[XOR]
+  - Samples in the (0,0) and (1,1) quadrants are green  
+  - samples in the (0,1) and (1,0) quadrants are orange 
+- .lb[XNOR]
+  - Samples in the (0,0) and (1,1) quadrants are orange  
+  - samples in the (0,1) and (1,0) quadrants are green 
+- .lb[R-XOR]
+  - XOR rotated by R degrees
+
+<img src="images/sim.png"  class="center"/> 
+
+
+
+---
+class: inverse
+
+## Lifelong learning in a simple environment
+
+<img src="images/l2_sim.png"  style="height:500px;">
+
+---
+class: inverse, middle 
+
+### Benchmark Data 
+
+
+---
+class:inverse 
+
+## Consider an  example
+
+- *CIFAR 100* is a popular image classification dataset with 100 classes of images. 
+- CIFAR 10x10 breaks the 100-class task problem into 10 tasks, each with 10-class.
+- 500 training images and 100 testing images per class.
+- All images are 32x32 color images.
+
+
+<img src="images/l2m_18mo/cifar-10.png" style="position:absolute; left:250px; width:400px;"/>
+
+
+---
+class: inverse 
+
+### Performance Summary
+<img src="images/stripplot_summary.png" style="width:650px;"/>
+
+---
+class: inverse
+
+##  Key Insights
+
+  1. Avoiding catastrophic forgetting simply means backward transfer is 0, but why stop there?
+  2. Ensembling representations  enables backward transfer > 0
+
+---
+class:inverse 
+
+## Limitations 
+
+2. Tasks must be discrete 
+3. Data must be batched into tasks 
+4. Tasks must be known 
+5. Feature space must be the same for all tasks 
+1. Internal representation grows linearly with # of tasks 
+1. Must grow rather than recruit new internal representations       
+      
+
+
+
+---
+class: inverse
+
+##  Key Accomplishments
+
+
+- Formalized Lifelong Learning as generalization of classical machine learning
+- Introduced novel evaluation criteria: forward and backward learning efficiency
+- Proposed generic lifelong learning algorithm framework by ensembling internal representations
+- Implemented Synergistic Forests and Network as specific examples
+- Demonstrated Synergistic algorithms uniquely exhibits 
+    - backward transfer 
+    - forward transfer 
+
+
+
+---
+class: inverse
+### [http://proglearn.neurodata.io/](http://proglearn.neurodata.io/)
+
+<img src="images/proglearn_webpage.png" style="width:680px;"/>
+
+---
+class: inverse
+
+## References 
+
+1. J. Dey et al. [Towards a theory of out-of-distribution learning](https://arxiv.org/abs/2109.14501), arXiv, 2021. 
+1. J. Dey et al. [Representation Ensembling for Synergistic Lifelong Learning with Quasilinear Complexity](https://arxiv.org/abs/2004.12908), arXiv, 2021.
+1. Xu, Haoyin, et al. [Streaming Decision Trees and Forests](https://arxiv.org/abs/2110.08483), arXiv, 2021.
+1. C. E. Priebe et al. [Modern Machine Learning: Partition and Vote](https://doi.org/10.1101/2020.04.29.068460), 2020. 
+1. R Guo, et al. [Estimating Information-Theoretic Quantities with Uncertainty Forests](https://arxiv.org/abs/1907.00325). arXiv, 2019.
+1. R. Perry, et al. [Manifold Forests: Closing the Gap on Neural Networks](https://openreview.net/forum?id=B1xewR4KvH). arXiv, 2019.
+1. C. Shen and J. T. Vogelstein. [Decision Forests Induce Characteristic Kernels](https://arxiv.org/abs/1812.00029). arXiv, 2019.
+1. M. Madhya, et al. [Geodesic Learning via Unsupervised Decision Forests](https://arxiv.org/abs/1907.02844). arXiv, 2019.
+1. M. Madhya, et al. [PACSET (Packed Serialized Trees): Reducing Inference Latency for Tree Ensemble Deployment](https://arxiv.org/abs/2011.05383). arXiv, 2020.
+
+
+
+---
+class:inverse 
+
+### Acknowledgements
+
+
+
+<!-- <div class="small-container">
+  <img src="faces/ebridge.jpg"/>
+  <div class="centered">Eric Bridgeford</div>
+</div>
+
+<div class="small-container">
+  <img src="faces/pedigo.jpg"/>
+  <div class="centered">Ben Pedigo</div>
+</div>
+
+<div class="small-container">
+  <img src="faces/jaewon.jpg"/>
+  <div class="centered">Jaewon Chung</div>
+</div> -->
+
+
+
+##### JHU
+
+<div class="small-container">
+  <img src="faces/cep.png"/>
+  <div class="centered">Carey Priebe</div>
+</div>
+
+<!-- <div class="small-container">
+  <img src="faces/randal.jpg"/>
+  <div class="centered">Randal Burns</div>
+</div> -->
+
+
+<!-- <div class="small-container">
+  <img src="faces/cshen.jpg"/>
+  <div class="centered">Cencheng Shen</div>
+</div> -->
+
+
+<!-- <div class="small-container">
+  <img src="faces/bruce_rosen.jpg"/>
+  <div class="centered">Bruce Rosen</div>
+</div>
+
+
+<div class="small-container">
+  <img src="faces/kent.jpg"/>
+  <div class="centered">Kent Kiehl</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/mim.jpg"/>
+  <div class="centered">Michael Miller</div>
+</div>
+
+<div class="small-container">
+  <img src="faces/dtward.jpg"/>
+  <div class="centered">Daniel Tward</div>
+</div> -->
+
+
+<!-- <div class="small-container">
+  <img src="faces/vikram.jpg"/>
+  <div class="centered">Vikram Chandrashekhar</div>
+</div>
+
+
+<div class="small-container">
+  <img src="faces/drishti.jpg"/>
+  <div class="centered">Drishti Mannan</div>
+</div> -->
+
+<div class="small-container">
+  <img src="faces/jesse.jpg"/>
+  <div class="centered">Jesse Patsolic</div>
+</div>
+
+<!-- <div class="small-container">
+  <img src="faces/falk_ben.jpg"/>
+  <div class="centered">Benjamin Falk</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/kwame.jpg"/>
+  <div class="centered">Kwame Kutten</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/perlman.jpg"/>
+  <div class="centered">Eric Perlman</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/loftus.jpg"/>
+  <div class="centered">Alex Loftus</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/bcaffo.jpg"/>
+  <div class="centered">Brian Caffo</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/minh.jpg"/>
+  <div class="centered">Minh Tang</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/avanti.jpg"/>
+  <div class="centered">Avanti Athreya</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/vince.jpg"/>
+  <div class="centered">Vince Lyzinski</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/dpmcsuss.jpg"/>
+  <div class="centered">Daniel Sussman</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/youngser.jpg"/>
+  <div class="centered">Youngser Park</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/shangsi.jpg"/>
+  <div class="centered">Shangsi Wang</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/tyler.jpg"/>
+  <div class="centered">Tyler Tomita</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/james.jpg"/>
+  <div class="centered">James Brown</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/disa.jpg"/>
+  <div class="centered">Disa Mhembere</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/gkiar.jpg"/>
+  <div class="centered">Greg Kiar</div>
+</div> -->
+
+
+<!-- <div class="small-container">
+  <img src="faces/jeremias.png"/>
+  <div class="centered">Jeremias Sulam</div>
+</div> -->
+
+
+<div class="small-container">
+  <img src="faces/meghana.png"/>
+  <div class="centered">Meghana Madhya</div>
+</div>
+  
+
+<!-- <div class="small-container">
+  <img src="faces/percy.png"/>
+  <div class="centered">Percy Li</div>
+</div>
+-->
+
+<div class="small-container">
+  <img src="faces/hayden.png"/>
+  <div class="centered">Hayden Helm</div>
+</div>
+
+
+<div class="small-container">
+  <img src="faces/rguo.jpg"/>
+  <div class="centered">Richard Gou</div>
+</div>
+
+<div class="small-container">
+  <img src="faces/ronak.jpg"/>
+  <div class="centered">Ronak Mehta</div>
+</div>
+
+##### Microsoft Research
+
+<div class="small-container">
+  <img src="faces/chwh-180x180.jpg"/>
+  <div class="centered">Chris White</div>
+</div>
+
+
+<div class="small-container">
+  <img src="faces/weiwei.jpg"/>
+  <div class="centered">Weiwei Yang</div>
+</div>
+
+<div class="small-container">
+  <img src="faces/jolarso150px.png"/>
+  <div class="centered">Jonathan Larson</div>
+</div>
+
+<div class="small-container">
+  <img src="faces/brtower-180x180.jpg"/>
+  <div class="centered">Bryan Tower</div>
+</div>
+
+
+##### DARPA 
+Hava, Ben, Robert, Jennifer, Ted.
+
+</div>
+<!-- <img src="images/funding/nsf_fpo.png" STYLE="HEIGHT:95px;"/> -->
+<!-- <img src="images/funding/nih_fpo.png" STYLE="HEIGHT:95px;"/> -->
+<!-- <img src="images/funding/darpa_fpo.png" STYLE=" HEIGHT:95px;"/> -->
+<!-- <img src="images/funding/iarpa_fpo.jpg" STYLE="HEIGHT:95px;"/> -->
+<!-- <img src="images/funding/KAVLI.jpg" STYLE="HEIGHT:95px;"/> -->
+<!-- <img src="images/funding/schmidt.jpg" STYLE="HEIGHT:95px;"/> -->
+
+---
+class: middle, inverse
+
+###Questions?
+
+
+
+</textarea>
+<!-- <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script> -->
+<script src="remark-latest.min.js"></script>
+<!-- <script src="remark-latest.min169.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
+<script type="text/javascript">
+
+  var options = {};
+  var renderMath = function() {
+    renderMathInElement(document.body);
+    // or if you want to use $...$ for math,
+    renderMathInElement(document.body, {delimiters: [ // mind the order of delimiters(!?)
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false},
+        {left: "\\[", right: "\\]", display: true},
+        {left: "\\(", right: "\\)", display: false},
+    ]});
+  }
+
+  var slideshow = remark.create(options, renderMath);
+
+  // var slideshow = remark.create({
+  // Set the slideshow display ratio
+  // Default: '4:3'
+  // Alternatives: '16:9', ...
+  // {
+  // ratio: '16:9',
+  // });
+
+</script>
+</body>
+</html>
