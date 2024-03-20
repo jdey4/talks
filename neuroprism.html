@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+
+  
+<head>
+  <title>Learning</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" href="fonts/quadon/quadon.css">
+  <link rel="stylesheet" href="fonts/gentona/gentona.css">
+  <link rel="stylesheet" href="slides_style_i.css">
+  <script type="text/javascript" src="assets/plotly/plotly-latest.min.js"></script>
+
+</head>
+
+<body>
+  <textarea id="source">
+
+<div>
+  
+
+<img src=
+  "images/jhu.png" 
+    alt="jhu logo" 
+    align="right"
+    width = "240"
+    height= "125">
+</div>
+<br>
+<br>
+<br>
+##Deep Discriminative to Kernel Density Networks for In- and Out-of-distribution Calibrated Inference
+
+Jayanta Dey, Will LeVine, Haoyin Xu, Ashwin De Silva <br>
+PI: Joshua T. Vogelstein, [JHU](https://www.jhu.edu/)
+
+<center>
+![:scale 30%](images/neurodata_blue.png)
+<br>
+</center>
+---
+## A bit about my research
+- Undergraduate Research: Ultrasound image deconvolution
+
+- MS Research: Ultrasound image despeckling
+
+- PhD Research: 
+ - Lifelong Learning with Forward and Backward Transfer
+ - Deep Discriminative to Kernel Density Graph for In- and Out-of-distribution Calibrated Inference
+ - Evaluating sex discriminating regions in brain from macaque to human
+
+- Others:  An Ensemble SVM-based Approach for Voice Activity Detection (ICECE 2018)    
+- Others: Heritability of human connectomes
+
+---
+## Robotic surgery
+
+<center>
+![:scale 80%](images/surgery.png)
+</center>
+
+.ye[Question:] Which do you prefer, left or right?
+
+---
+## A funny experiment with ChatGPT
+
+<center>
+![:scale 50%](images/chatgpt.jpeg)
+</center>
+---
+## Overcondience in ID and OOD Regions
+
+<center>
+  ![:scale 80%](images/overconfident.png)
+  </center>
+
+---
+## What is posterior calibration?
+
+We say a model is calibrated for posterior if 
+<br>
+<center>
+  $\hat{P}(y|x) = P(y|x)$
+</center>
+
+Indirect way of measuring it 
+<center>
+$P(Y=y|\hat{P} = p) = p$
+</center>
+---
+## Existing methods
+
+### .w[In-distribution Calibration]
+- Platt Scaling
+- Isotonic Regression
+- Temperature Scaling
+- Ensemble Methods
+
+### .w[OOD Calibration]
+- Discriminative 
+- Generative 
+---
+## What are we solving?
+- Address in-distribution (ID) and out-of-distribution (OOD) calibration as a continuum.
+
+- Address the confidence calibration problems for both ReLU-nets and random forests from a common ground.
+
+
+- Do unsupervised OOD calibration.
+
+- Do OOD confidence calibration for both tabular and vision datatsets.
+---
+## Problem Formulation
+- Consider a supervised learning problem with $\mathrm{IID}$ training samples $\{ (\mathbf{x}\_i, y\_i)\}\_{i=1}^n$ 
+- $(X, Y) \sim P\_{X, Y}$, where $X \sim P\_X$ is a $\mathcal{X} \subseteq \mathbb{R}^d$ valued input and $Y \sim P\_Y$ is a $\mathcal{Y} = \{1, \cdots, K\}$ valued class label. 
+- We define, $\mathcal{S}$ as high density region of $P\_{X}$. 
+
+We want to estimate $g\_y(\mathbf{x})$ such that:
+<br>
+$$g\_y(\mathbf{x}) =  P\_{Y|X}(y|\mathbf{x}), ~\text{if} ~\mathbf{x} \in \mathcal{S}$$
+$$      = P\_Y(y), ~\text{if} ~\mathbf{x} \notin \mathcal{S}$$
+---
+## How Deep Discriminative Networks Partition 
+<br>
+<center>
+  ![:scale 70%](images/polytopes.png)
+</center>
+
+$$\hat{f}\_y(\mathbf{x}) = \sum\_{r=1}^{p} (a\_r^T \mathbf{x} + b\_r)I(\mathbf{x} \in Q\_r)$$
+
+---
+## Our Approach
+### .w[We replace the affine activations:]
+$$\hat{f}\_y(\mathbf{x}) = \frac{1}{n\_y}\sum\_{r \in \mathcal{P}}n\_{ry} G(\mathbf{x}, \hat{\mu}\_r, \hat{\Sigma}\_r)I(r = r^*\_{\mathbf{x}}) + \frac{b}{n}$$
+
+$$\text{where}, r^*\_{\mathbf{x}} = argmin~\_r ~|\mu\_r - \mathbf{x}|$$
+
+#### .w[We estimate $g\_y(x)$ as:]
+$$\hat{g}\_y(\mathbf{x}) = \frac{\hat{f}\_y(\mathbf{x}) \hat{P}\_Y(y)}{\sum\_{k=1}^{K} \hat{f}\_k(\mathbf{x}) \hat{P}\_Y(k)}$$
+---
+## Gaussian Parameters Estimation
+
+$$\hat{\mu}\_r = \frac{1}{n\_r} \sum\_{i=1}^{n} \mathbf{x}\_i I(\mathbf{x}\_i \in Q\_r)$$
+
+<br>
+<br>
+$$\hat{\Sigma}\_r = \frac{ \sum\_{i=1}^n I(\mathbf{x}\_i \in Q\_r) (\mathbf{x}\_i - \hat{\mu}\_r)  (\mathbf{x}\_i - \hat{\mu}\_r)^\top +\lambda I\_d}{ \sum\_{i=1}^n I(\mathbf{x}\_i \in Q\_r)}$$
+---
+## Forest and Neural Kernel
+<center>
+  ![:scale 80%](images/kernel_flow_diag.png)
+</center>
+---
+## Nearest Polytope Estimation
+
+### .w[Geodesic Distance:]
+$$d(r,s) = -\mathcal{K}(r,s) + \frac{1}{2} (\mathcal{K}(r,r) + \mathcal{K}(s,s)) = 1 - \mathcal{K}(r,s)$$
+---
+## Simulation Experiments
+<center>
+  ![:scale 65%](images/simulations_slides.png)
+</center>
+---
+## Simulation Experiments (Continued)
+<center>
+  ![:scale 65%](images/simulation_res_slides.png)
+</center>
+
+---
+## Simulation Experiments (Continued)
+<center>
+  ![:scale 65%](images/image_simulation.png)
+</center>
+---
+## OpenML Data Study
+<center>
+  ![:scale 70%](images/openml_summary.png)
+</center>
+---
+## Vision Data Study
+<center>
+  ![:scale 100%](images/cifar10.png)
+  $\uparrow$ and $\downarrow$ indicate whether higher and lower values are better, respectively.
+</center>
+---
+## Conclusions
+- We measure similarity between polytopes using forest or neural kernel and then measure local similarity using a Gaussian kernel.
+- Thinking in terms of polytopes is a good way to solve calibration problem in a unified way for both RF and ReLU-nets in both ID and OOD regions.
+---
+### Acknowledgements
+
+
+
+<!-- <div class="small-container">
+  <img src="faces/ebridge.jpg"/>
+  <div class="centered">Eric Bridgeford</div>
+</div>
+
+<div class="small-container">
+  <img src="faces/pedigo.jpg"/>
+  <div class="centered">Ben Pedigo</div>
+</div>
+
+<div class="small-container">
+  <img src="faces/jaewon.jpg"/>
+  <div class="centered">Jaewon Chung</div>
+</div> -->
+<div class="small-container">
+  <img src="faces/jovo.png"/>
+  <div class="centered">Carey Priebe</div>
+</div>
+
+<div class="small-container">
+  <img src="faces/cep.png"/>
+  <div class="centered">Carey Priebe</div>
+</div>
+
+<div class="small-container">
+  <img src="faces/hao.jpg"/>
+  <div class="centered">Hao</div>
+</div>
+
+<div class="small-container">
+  <img src="faces/ashwin.png"/>
+  <div class="centered">Ashwin De Silva</div>
+</div>
+
+<div class="small-container">
+  <img src="faces/will.jpg"/>
+  <div class="centered">Will LeVine</div>
+</div>
+
+<!-- <div class="small-container">
+  <img src="faces/mim.jpg"/>
+  <div class="centered">Michael Miller</div>
+</div>
+
+<div class="small-container">
+  <img src="faces/dtward.jpg"/>
+  <div class="centered">Daniel Tward</div>
+</div> -->
+
+
+<!-- <div class="small-container">
+  <img src="faces/vikram.jpg"/>
+  <div class="centered">Vikram Chandrashekhar</div>
+</div>
+
+
+<div class="small-container">
+  <img src="faces/drishti.jpg"/>
+  <div class="centered">Drishti Mannan</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/kwame.jpg"/>
+  <div class="centered">Kwame Kutten</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/perlman.jpg"/>
+  <div class="centered">Eric Perlman</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/bcaffo.jpg"/>
+  <div class="centered">Brian Caffo</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/minh.jpg"/>
+  <div class="centered">Minh Tang</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/avanti.jpg"/>
+  <div class="centered">Avanti Athreya</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/vince.jpg"/>
+  <div class="centered">Vince Lyzinski</div>
+</div> -->
+
+<!-- <div class="small-container">
+  <img src="faces/dpmcsuss.jpg"/>
+  <div class="centered">Daniel Sussman</div>
+</div> -->
+
+
+<!-- <div class="small-container">
+  <img src="faces/shangsi.jpg"/>
+  <div class="centered">Shangsi Wang</div>
+</div> -->
+
+<div class="small-container">
+  <img src="faces/tyler.jpg"/>
+  <div class="centered">Tyler Tomita</div>
+</div>
+
+<div class="small-container">
+  <img src="faces/alig.jpg"/>
+  <div class="centered">Ali Geisa</div>
+</div>
+<!-- <div class="small-container">
+  <img src="faces/gkiar.jpg"/>
+  <div class="centered">Greg Kiar</div>
+</div> -->
+
+ 
+
+<!-- </div><span style="font-size:200%; color:red;">&hearts;, &#129409;, &#128106;, &#127758;, &#127756;</span> -->
+
+---
+## Questions? 
+---
+
+</textarea>
+  <!-- <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script> -->
+  <!-- <script src="remark-latest.min.js"></script> -->
+  <script src="remark-latest.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
+  <script type="text/javascript">
+
+    var options = {};
+    var renderMath = function () {
+      renderMathInElement(document.body);
+      // or if you want to use $...$ for math,
+      renderMathInElement(document.body, {
+        delimiters: [ // mind the order of delimiters(!?)
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false },
+        ]
+      });
+    }
+
+    remark.macros.scale = function (percentage) {
+      var url = this;
+      return '<img src="' + url + '" style="width: ' + percentage + '" />';
+    };
+
+    // var slideshow = remark.create({
+    // Set the slideshow display ratio
+    // Default: '4:3'
+    // Alternatives: '16:9', ...
+    // {
+    // ratio: '16:9',
+    // });
+    
+    var slideshow = remark.create(options, renderMath);
+
+  
+  </script>
+</body>
+
+</html>
