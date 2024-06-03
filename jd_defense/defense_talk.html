@@ -122,7 +122,7 @@ June 5, 2024
 - .r[Backward transfer]: transfer from future tasks to past tasks
 - .r[Catastrophic forgetting]:  learning new tasks causes performance .r[degradation] on previous tasks
 
-<img src="images/task_sequence.jpeg" STYLE="width:90%;" />
+<img src="images/task_sequence.png" STYLE="width:90%;" />
 
 ---
 ## Natural Intelligence
@@ -246,7 +246,6 @@ $$
 
 ---
 ## Overcondience in ID and OOD Regions
-
 <img src="../images/overconfident.png" style="width:650px;"/>
 
 ---
@@ -290,13 +289,15 @@ $$\hat{f}\_y(\mathbf{x}) = \sum\_{r=1}^{p} (a\_r^T \mathbf{x} + b\_r)I(\mathbf{x
 
 ---
 ## Our Approach
+
+Deep discriminative networks:
 $$\hat{f}\_y(\mathbf{x}) = \sum\_{r=1}^{p} (a\_r^T \mathbf{x} + b\_r)I(\mathbf{x} \in Q\_r)$$
 We replace the affine activations:
 $$\hat{f}\_y(\mathbf{x}) = \frac{1}{n\_y}\sum\_{r \in \mathcal{P}}n\_{ry} G(\mathbf{x}, \hat{\mu}\_r, \hat{\Sigma}\_r)I(r = r^*\_{\mathbf{x}}) + \frac{b}{n}$$
 
 $$\text{where}, r^*\_{\mathbf{x}} = argmin~\_r ~|\mu\_r - \mathbf{x}|$$
 
-#### .w[We estimate $g\_y(x)$ as:]
+We estimate $g\_y(x)$ as:
 $$\hat{g}\_y(\mathbf{x}) = \frac{\hat{f}\_y(\mathbf{x}) \hat{P}\_Y(y)}{\sum\_{k=1}^{K} \hat{f}\_k(\mathbf{x}) \hat{P}\_Y(k)}$$
 ---
 ## Gaussian Parameters Estimation
@@ -309,11 +310,9 @@ $$(\hat{\sigma}^d\_r)^2 = \frac{1}{n\_r}\{\sum\_{i=1}^n I(\mathbf{x}\_i \in Q\_r
 ---
 ## Forest and Neural Kernel
 
-<img src="../images/kernel_flow_diag.png" style="width:650px;"/>
+<img src="images/kernel_flow_diag.png" style="width:650px;"/>
 ---
-## Nearest Polytope Estimation
-
-### .w[Geodesic Distance:]
+## Geodesic Distance:
 $$d(r,s) = -\mathcal{K}(r,s) + \frac{1}{2} (\mathcal{K}(r,r) + \mathcal{K}(s,s)) = 1 - \mathcal{K}(r,s)$$
 ---
 ## Simulation Experiments
@@ -331,9 +330,9 @@ $$d(r,s) = -\mathcal{K}(r,s) + \frac{1}{2} (\mathcal{K}(r,r) + \mathcal{K}(s,s))
 $\uparrow$ and $\downarrow$ indicate whether higher and lower values are better.
 ---
 ## Conclusions
-- May not scale for really large datatsets
 - We measure similarity between polytopes using forest or neural kernel and then measure local similarity using a Gaussian kernel.
 - Thinking in terms of polytopes is a good way to solve calibration problem in a unified way for both RF and ReLU-nets in both ID and OOD regions.
+- May not scale for really large datatsets
 ---
 ### Acknowledgements
 
@@ -373,10 +372,6 @@ $\uparrow$ and $\downarrow$ indicate whether higher and lower values are better.
   <div class="centered">Ashwin De Silva</div>
 </div>
 
-<div class="small-container">
-  <img src="../faces/will.jpg"/>
-  <div class="centered">Will LeVine</div>
-</div>
 
 <!-- <div class="small-container">
   <img src="faces/mim.jpg"/>
@@ -446,10 +441,6 @@ $\uparrow$ and $\downarrow$ indicate whether higher and lower values are better.
   <div class="centered">Tyler Tomita</div>
 </div>
 
-<div class="small-container">
-  <img src="../faces/alig.jpg"/>
-  <div class="centered">Ali Geisa</div>
-</div>
 
 
 <!-- <div class="small-container">
