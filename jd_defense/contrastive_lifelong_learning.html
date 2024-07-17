@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Contrastive Lifelong Learning</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="../fonts/quadon/quadon.css">
+    <link rel="stylesheet" href="../fonts/gentona/gentona.css">
+    <link rel="stylesheet" href="../slides_style.css">
+    <script type="text/javascript" src="../assets/plotly/plotly-latest.min.js"></script>
+    <style>
+        /* Three image containers (use 25% for four, and 50% for two, etc) */
+        .column2 {
+        float: left;
+        width: 48%;
+        padding: 5px;
+        }
+
+        .column3 {
+        float: left;
+        width: 31%;
+        padding: 5px;
+        }
+
+        /* Clear floats after image containers */
+        .row::after {
+        content: "";
+        clear: both;
+        display: table;
+        }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+<br> 
+<br> 
+
+## Contrastive Lifelong Learning
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+Jayanta Dey
+
+July 17, 2024
+
+---
+
+## Research Questions?
+- How much capacity do we need to learn T tasks?
+- What is the quality of replay we need? 
+- How should we learn a common representation? 
+
+---
+
+### So what makes Forward trasnfer so easy? (Experiments to be done)
+
+- Forward transfer reduces if we reduce the number of pretraining classes.
+- Forward transfer reduces if we reduce the resolution of the pretraining images.
+
+---
+## A simple learning example
+
+- $s =(x_i,y_i)$, $i \in \lbrace 1, 2, \ldots, 200 \rbrace$
+  - $x \in \mathbb{R}^{10}$, first $2$ dimensions contain signal
+  - $y \in \lbrace 0,1 \rbrace$
+- we desire to learn a classifier that minimizes expected misclassification rate
+---
+## Simulation
+
+<img src="images/xor_tasks_sim.png" STYLE="width:100%;" />
+
+---
+<img src="../images/rock20/s2.png" style="position:absolute; top:0px; left:100px; height:100%;"/>
+
+---
+<img src="../images/rock20/s3.png" style="position:absolute; top:0px; left:100px; height:100%;"/>
+
+---
+<img src="../images/rock20/s3a.png" style="position:absolute; top:0px; left:100px; height:100%;"/>
+
+---
+## Partition Kernel
+A kernel is a positive semi-definite (PSD) function $k(a,b) : \mathcal{I} \times \mathcal{I} \to R$ 
+that is used to indicate the similarity of two points $a,b$ in a space $\mathcal{I}$.
+
+<img src="images/tree_partition.png" STYLE="width:70%;" />
+---
+<img src="images/forest_kernel.png" STYLE="width:70%;" />
+---
+## Algorithm 
+- Use partition kernel to weight contrastive loss
+- Train only corresponding head with each task and fine tune encoder each time 
+- Do unsupervised replay
+
+---
+## Simulation Result
+
+<img src="images/xor_tasks.png" STYLE="width:90%;" />
+---
+
+## SNR of Replay vs. Transfer 
+
+<img src="images/noisy_replay.png" STYLE="width:60%;" />
+
+---
+
+## Questions? 
+
+</textarea>
+<!-- <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script> -->
+<script src="../remark-latest.min.js"></script>
+<!-- <script src="remark-latest.min169.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
+<script type="text/javascript">
+
+  var options = {};
+  var renderMath = function() {
+    renderMathInElement(document.body);
+    // or if you want to use $...$ for math,
+    renderMathInElement(document.body, {delimiters: [ // mind the order of delimiters(!?)
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false},
+        {left: "\\[", right: "\\]", display: true},
+        {left: "\\(", right: "\\)", display: false},
+    ]});
+  }
+
+  var slideshow = remark.create(options, renderMath);
+
+  // var slideshow = remark.create({
+  // Set the slideshow display ratio
+  // Default: '4:3'
+  // Alternatives: '16:9', ...
+  // {
+  // ratio: '16:9',
+  // });
+
+</script>
+</body>
+</html>
